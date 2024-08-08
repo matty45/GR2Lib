@@ -1,5 +1,5 @@
 """Contains Granny struct and data information."""
-from ctypes import c_int, c_int32, c_void_p, c_bool, c_uint, c_char_p, c_float, c_ubyte, c_ulonglong, Structure, POINTER
+from ctypes import c_int, c_int32, c_ushort, c_void_p, c_bool, c_uint, c_char_p, c_float, c_ubyte, c_ulonglong, Structure, POINTER
 from enum import IntEnum
 
 # Define the types we need.
@@ -236,32 +236,76 @@ class GrannyVertexData(Structure):
                 ('vertex_annotation_set_count',c_int),
                 ('vertex_annotation_sets',POINTER(GrannyVertexAnnotationSet))]     
 
-class GrannyFileInfo(Structure):
-    """ granny file information """
+class GrannyTriAnnotationSet(Structure):
+    """ triangle annotation data """
     _pack_ = 1
     _fields_ = [
-                ('header',POINTER(GrannyFileArtToolInfo)),
-                ('exporter_info',POINTER(GrannyFileExporterInfo)),
-                ('file_name',c_char_p),
-                ('texture_count',c_int),
-                ('textures',POINTER(POINTER(GrannyTexture))),
-                ('material_count',c_int),
-                ('materials',POINTER(POINTER(GrannyMaterial))),
-                ('skeleton_count',c_int),
-                ('skeletons',POINTER(POINTER(GrannySkeleton))),
-                ('vertex_data_count',c_int),
-                ('vertex_datas',POINTER(POINTER(GrannyVertexData))),
-                ('tri_topology_count',c_int),
-                ('tri_topologies',POINTER(POINTER(GrannyTriTopology))),
-                ('mesh_count',c_int),
-                ('meshes',POINTER(POINTER(GrannyMesh))),
-                ('model_count',c_int),
-                ('models',POINTER(POINTER(GrannyModel))),
-                ('track_group_count',c_int),
-                ('track_groups',POINTER(POINTER(GrannyTrackGroup))),
-                ('animation_count',c_int),
-                ('animations',POINTER(POINTER(GrannyAnimation))),
-                ('extended_data',GrannyVariant)]
+                ('name',c_char_p),
+                ('tri_annotation_type',POINTER(GrannyDataTypeDefinition)),
+                ('tri_annotation_count',c_int),
+                ('tri_annotations',POINTER(c_ubyte)),
+                ('indices_map_from_tri_to_annotation',c_int),
+                ('tri_annotation_index_count',c_int),
+                ('tri_annotation_indices',POINTER(c_int))]     
+
+class GrannyTriMaterialGroup(Structure):
+    """ triangle data relating to the attached material """
+    _pack_ = 1
+    _fields_ = [
+                ('material_index',c_int),
+                ('tri_first',c_int),
+                ('tri_count',c_int)]    
+
+class GrannyTriTopology(Structure):
+    """ triangle topology data """
+    _pack_ = 1
+    _fields_ = [
+                ('group_count',c_int),
+                ('groups',POINTER(GrannyTriMaterialGroup)),
+                ('index_count',c_int),
+                ('indices',POINTER(c_int)),
+                ('index16_count',c_int),
+                ('indices16',POINTER(c_ushort)),
+                ('vertex_to_vertex_count',c_int),
+                ('vertex_to_vertex_map',POINTER(c_int)),
+                ('vertex_to_triangle_count',c_int),
+                ('vertex_to_triangle_map',POINTER(c_int)),
+                ('SideToNeighborCount',c_int),
+                ('SideToNeighborMap',POINTER(c_uint)),
+                ('BonesForTriangleCount',c_int),
+                ('BonesForTriangle',POINTER(c_int)),
+                ('TriangleToBoneCount',c_int),
+                ('TriangleToBoneIndices',POINTER(c_int)),
+                ('TriAnnotationSetCount',c_int),
+                ('TriAnnotationSets',POINTER(GrannyTriAnnotationSet))]    
+
+
+# class GrannyFileInfo(Structure):
+#     """ granny file information """
+#     _pack_ = 1
+#     _fields_ = [
+#                 ('header',POINTER(GrannyFileArtToolInfo)),
+#                 ('exporter_info',POINTER(GrannyFileExporterInfo)),
+#                 ('file_name',c_char_p),
+#                 ('texture_count',c_int),
+#                 ('textures',POINTER(POINTER(GrannyTexture))),
+#                 ('material_count',c_int),
+#                 ('materials',POINTER(POINTER(GrannyMaterial))),
+#                 ('skeleton_count',c_int),
+#                 ('skeletons',POINTER(POINTER(GrannySkeleton))),
+#                 ('vertex_data_count',c_int),
+#                 ('vertex_datas',POINTER(POINTER(GrannyVertexData))),
+#                 ('tri_topology_count',c_int),
+#                 ('tri_topologies',POINTER(POINTER(GrannyTriTopology))),
+#                 ('mesh_count',c_int),
+#                 ('meshes',POINTER(POINTER(GrannyMesh))),
+#                 ('model_count',c_int),
+#                 ('models',POINTER(POINTER(GrannyModel))),
+#                 ('track_group_count',c_int),
+#                 ('track_groups',POINTER(POINTER(GrannyTrackGroup))),
+#                 ('animation_count',c_int),
+#                 ('animations',POINTER(POINTER(GrannyAnimation))),
+#                 ('extended_data',GrannyVariant)]
 
 
 class GrannyGRNSection(Structure):
