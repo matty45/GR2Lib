@@ -1,0 +1,3 @@
+[tool.basedpyright]
+reportAny = false
+reportMissingTypeStubs = false
