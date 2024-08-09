@@ -424,7 +424,7 @@ class GrannyFileInfo(Structure):
     """ granny file information """
     _pack_ = 1
     _fields_ = [
-                ('header',POINTER(GrannyFileArtToolInfo)),
+                ('art_tool_info',POINTER(GrannyFileArtToolInfo)),
                 ('exporter_info',POINTER(GrannyFileExporterInfo)),
                 ('file_name',c_char_p),
                 ('texture_count',c_int),
