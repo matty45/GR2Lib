@@ -6,27 +6,53 @@ from gr2_size_test import check_granny_struct_sizes
 def print_file_stats(granny_file : GrannyFile):
     """This prints internal file statistics. """
     section_array = granny_get_grn_section_array(granny_file.contents.header)
-    print("Granny file contains " + str(granny_file.contents.section_count) + " sections.")
+    print(f"Granny file contains {granny_file.contents.section_count} sections.")
 
     #Iterate through granny file sections and check if they are compressed or not.
     for section_index in range(granny_file.contents.section_count):
         if granny_file.contents.sections[section_index]:
-            print("Section " + str(section_index) + " is present.")
+
+            print(f"\nSection {section_index} is present.")
 
             if section_array[section_index].data_size == section_array[section_index].expanded_data_size:
-                 print("Section " + str(section_index) + " is uncompressed.")
+                 print(f"Section {section_index} is uncompressed.")
             else:
-                print("Section " + str(section_index) + " is compressed.")
+                print(f"Section {section_index} is compressed.")
         else:
-            print("Section " + str(section_index) + " is empty or freed from memory.")
+            print(f"Section {section_index} is empty or freed from memory.")
 
 def print_file_info_stats(granny_file : GrannyFile):
     """This prints file info statistics. """
     file_info = granny_get_file_info(granny_file)
-    if file_info:
-        print(file_info)
-    else:
+    if file_info == 0:
         print("Could not get granny file information.")
+        return
+    
+    # Get art tool info
+    if file_info.contents.art_tool_info:
+       info_data = file_info.contents.art_tool_info.contents
+       print("\nArt tool info:")
+       print(f'File was made using \'{info_data.art_tool_name.decode("UTF-8")}\' Version: ({info_data.art_tool_major_revision}.{info_data.art_tool_minor_revision})')
+
+       print(f"Units per meter: {info_data.units_per_meter}")
+
+       print(f"\nRight vector: {info_data.right_vector[0]} {info_data.right_vector[1]} {info_data.right_vector[2]}")
+       print(f"Up vector: {info_data.up_vector[0]} {info_data.up_vector[1]} {info_data.up_vector[2]}")
+       print(f"Back vector: {info_data.back_vector[0]} {info_data.back_vector[1]} {info_data.back_vector[2]}")
+    else:
+        print ("No map tool info, this might break some granny dll functions.")
+
+    #Get item counts
+    print(f"\n Textures: {file_info.contents.texture_count}")
+    print(f"Materials: {file_info.contents.material_count}")
+    print(f"Skeletons: {file_info.contents.skeleton_count}")
+    print(f"Vertex datas: {file_info.contents.vertex_data_count}")
+    print(f"Tri topologies: {file_info.contents.tri_topology_count}")
+    print(f"Meshes: {file_info.contents.mesh_count}")
+    print(f"Models: {file_info.contents.model_count}")
+    print(f"Track Groups: {file_info.contents.track_group_count}")
+    print(f"Animations: {file_info.contents.animation_count}")
+
     
 
 #Make sure we implemented the structs correctly or so help me god.
@@ -41,7 +67,7 @@ if file:
     print_file_stats(file)
     print_file_info_stats(file)
 else:
-    print("Could not open " + FILE_PATH)
+    print(f"Could not open {FILE_PATH}")
 
 
 
