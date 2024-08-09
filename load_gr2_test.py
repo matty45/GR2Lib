@@ -1,12 +1,11 @@
 """This loads a granny file and prints out all of its info."""
 from gr2_dll_funcs import granny_get_file_info, granny_get_grn_section_array, granny_read_entire_file
 from gr2_format import GrannyFile
-from gr2_size_test import check_granny_struct_sizes
 
 def print_file_stats(granny_file : GrannyFile):
     """This prints internal file statistics. """
     section_array = granny_get_grn_section_array(granny_file.contents.header)
-    print(f"Granny file contains {granny_file.contents.section_count} sections.")
+    print(f"\nGranny file contains {granny_file.contents.section_count} sections.")
 
     #Iterate through granny file sections and check if they are compressed or not.
     for section_index in range(granny_file.contents.section_count):
@@ -25,7 +24,7 @@ def print_file_info_stats(granny_file : GrannyFile):
     """This prints file info statistics. """
     file_info = granny_get_file_info(granny_file)
     if file_info == 0:
-        print("Could not get granny file information.")
+        print("\nCould not get granny file information.")
         return
     
     # Get art tool info
@@ -43,7 +42,7 @@ def print_file_info_stats(granny_file : GrannyFile):
         print ("No map tool info, this might break some granny dll functions.")
 
     #Get item counts
-    print(f"\n Textures: {file_info.contents.texture_count}")
+    print(f"\nTextures: {file_info.contents.texture_count}")
     print(f"Materials: {file_info.contents.material_count}")
     print(f"Skeletons: {file_info.contents.skeleton_count}")
     print(f"Vertex datas: {file_info.contents.vertex_data_count}")
@@ -53,21 +52,14 @@ def print_file_info_stats(granny_file : GrannyFile):
     print(f"Track Groups: {file_info.contents.track_group_count}")
     print(f"Animations: {file_info.contents.animation_count}")
 
-    
-
-#Make sure we implemented the structs correctly or so help me god.
-check_granny_struct_sizes()
-
-FILE_PATH = "test_fbx_mongoose_render.gr2"
-
-#Ctypes requires a full path to the file, idk how to do relative lol.
-file = granny_read_entire_file(FILE_PATH)
-
-if file:
-    print_file_stats(file)
-    print_file_info_stats(file)
-else:
-    print(f"Could not open {FILE_PATH}")
+def load_gr2_test(file_path : str):
+    #Ctypes requires a full path to the file, idk how to do relative lol.
+    file = granny_read_entire_file(file_path)
+    if file:
+        print_file_stats(file)
+        print_file_info_stats(file)
+    else:
+        print(f"Could not open {file_path}")
 
 
 
