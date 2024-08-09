@@ -189,7 +189,7 @@ class GrannyTransform(Structure):
                 ('flags',c_uint),
                 ('position',c_float * 3),
                 ('orientation',c_float * 4),
-                ('ScaleShear',c_float * 3 * 3)]     
+                ('scale_shear',c_float * 3 * 3)]     
 
 class GrannyBone(Structure):
     """ bone data """
@@ -270,42 +270,182 @@ class GrannyTriTopology(Structure):
                 ('vertex_to_vertex_map',POINTER(c_int)),
                 ('vertex_to_triangle_count',c_int),
                 ('vertex_to_triangle_map',POINTER(c_int)),
-                ('SideToNeighborCount',c_int),
-                ('SideToNeighborMap',POINTER(c_uint)),
-                ('BonesForTriangleCount',c_int),
-                ('BonesForTriangle',POINTER(c_int)),
-                ('TriangleToBoneCount',c_int),
-                ('TriangleToBoneIndices',POINTER(c_int)),
-                ('TriAnnotationSetCount',c_int),
-                ('TriAnnotationSets',POINTER(GrannyTriAnnotationSet))]    
+                ('side_to_neighbor_count',c_int),
+                ('side_to_neighbor_map',POINTER(c_uint)),
+                ('bones_for_triangle_count',c_int),
+                ('bones_for_triangle',POINTER(c_int)),
+                ('triangle_to_bone_count',c_int),
+                ('triangle_to_bone_indices',POINTER(c_int)),
+                ('tri_annotation_set_count',c_int),
+                ('tri_annotation_sets',POINTER(GrannyTriAnnotationSet))]    
+
+class GrannyMorphTarget(Structure):
+    """ morph target data """
+    _pack_ = 1
+    _fields_ = [
+                ('scalar_name',c_char_p),
+                ('vertex_data',POINTER(GrannyVertexData)),
+                ('data_is_deltas',c_int)]  
+
+class GrannyMaterialBinding(Structure):
+    """ material binding data """
+    _pack_ = 1
+    _fields_ = [
+                ('material',POINTER(GrannyMaterial))]  
+
+class GrannyBoneBinding(Structure):
+    """ bone binding data """
+    _pack_ = 1
+    _fields_ = [
+                ('bone_name',c_char_p),
+                ('obb_min',c_float * 3),
+                ('obb_max',c_float * 3),
+                ('triangle_count',c_int),
+                ('triangle_indices',POINTER(c_int))]  
+
+class GrannyMesh(Structure):
+    """ mesh data """
+    _pack_ = 1
+    _fields_ = [
+                ('name',c_char_p),
+                ('primary_vertex_data',POINTER(GrannyVertexData)),
+                ('morph_target_count',c_int),
+                ('morph_targets',POINTER(GrannyMorphTarget)),
+                ('primary_topology',POINTER(GrannyTriTopology)),
+                ('material_binding_count',c_int),
+                ('material_bindings',POINTER(GrannyMaterialBinding)),
+                ('bone_bindings_count',c_int),
+                ('bone_bindings',POINTER(GrannyBoneBinding)),
+                ('extended_data',GrannyVariant)]  
+
+class GrannyModelMeshBinding(Structure):
+    """ model mesh binding data """
+    _pack_ = 1
+    _fields_ = [
+                ('mesh',POINTER(GrannyMesh))]  
+
+class GrannyModel(Structure):
+    """ model data """
+    _pack_ = 1
+    _fields_ = [
+                ('name',c_char_p),
+                ('skeleton',POINTER(GrannySkeleton)),
+                ('initial_placement',GrannyTransform),
+                ('mesh_binding_count',c_int),
+                ('mesh_bindings',POINTER(GrannyModelMeshBinding)),
+                ('extended_data',GrannyVariant)]  
+
+class GrannyCurve2(Structure):
+    """ vertex curve animation data """
+    _pack_ = 1
+    _fields_ = [
+                ('curve_data',GrannyVariant)]  
+
+class GrannyVectorTrack(Structure):
+    """ vector animation data """
+    _pack_ = 1
+    _fields_ = [
+                ('name',c_char_p),
+                ('track_key',c_int),
+                ('dimension',c_int),
+                ('value_curve',GrannyCurve2)]  
+
+class GrannyTransformTrack(Structure):
+    """ transform animation data """
+    _pack_ = 1
+    _fields_ = [
+                ('name',c_char_p),
+                ('flags',c_int),
+                ('orientation_curve',GrannyCurve2),
+                ('position_curve',GrannyCurve2),
+                ('scale_shear_curve',GrannyCurve2)]  
+
+class GrannyTextTrackEntry(Structure):
+    """ text animation data entry """
+    _pack_ = 1
+    _fields_ = [
+                ('timestamp',c_float),
+                ('timestamp',c_char_p)]  
+
+class GrannyTextTrack(Structure):
+    """ text animation data used for engine stuff """
+    _pack_ = 1
+    _fields_ = [
+                ('name',c_char_p),  
+                ('entry_count',c_int),
+                ('entries',POINTER(GrannyTextTrackEntry)),]  
+
+class GrannyPeriodicLoop(Structure):
+    """ periodic loop data """
+    _pack_ = 1
+    _fields_ = [
+                ('radius',c_float),
+                ('d_angle',c_float),
+                ('d_z',c_float),
+                ('basis_x',c_float * 3),
+                ('basis_y',c_float * 3),
+                ('axis',c_float * 3),]  
+
+class GrannyTrackGroup(Structure):
+    """ track group data """
+    _pack_ = 1
+    _fields_ = [
+                ('name',c_char_p),
+                ('vector_track_count',c_int),
+                ('vector_tracks',POINTER(GrannyVectorTrack)),
+                ('transform_track_count',c_int),
+                ('morph_targets',POINTER(GrannyTransformTrack)),
+                ('transform_lod_error_count',c_int),
+                ('tranform_lod_errors',POINTER(c_float)),
+                ('text_track_count',c_int),
+                ('text_tracks',POINTER(GrannyTextTrack)),
+                ('initial_placement',GrannyTransform),
+                ('flags',c_int),
+                ('loop_translation',c_float * 3),
+                ('periodic_loop',POINTER(GrannyPeriodicLoop)),
+                ('extended_data',GrannyVariant)]  
+
+class GrannyAnimation(Structure):
+    """ animation data """
+    _pack_ = 1
+    _fields_ = [
+                ('name',c_char_p),
+                ('duration',c_float),
+                ('time_step',c_float),
+                ('oversampling',c_float),
+                ('track_group_count',c_int),
+                ('track_groups',POINTER(GrannyTrackGroup)),
+                ('default_loop_count',c_int),
+                ('flags',c_int),
+                ('extended_data',GrannyVariant)]  
 
 
-# class GrannyFileInfo(Structure):
-#     """ granny file information """
-#     _pack_ = 1
-#     _fields_ = [
-#                 ('header',POINTER(GrannyFileArtToolInfo)),
-#                 ('exporter_info',POINTER(GrannyFileExporterInfo)),
-#                 ('file_name',c_char_p),
-#                 ('texture_count',c_int),
-#                 ('textures',POINTER(POINTER(GrannyTexture))),
-#                 ('material_count',c_int),
-#                 ('materials',POINTER(POINTER(GrannyMaterial))),
-#                 ('skeleton_count',c_int),
-#                 ('skeletons',POINTER(POINTER(GrannySkeleton))),
-#                 ('vertex_data_count',c_int),
-#                 ('vertex_datas',POINTER(POINTER(GrannyVertexData))),
-#                 ('tri_topology_count',c_int),
-#                 ('tri_topologies',POINTER(POINTER(GrannyTriTopology))),
-#                 ('mesh_count',c_int),
-#                 ('meshes',POINTER(POINTER(GrannyMesh))),
-#                 ('model_count',c_int),
-#                 ('models',POINTER(POINTER(GrannyModel))),
-#                 ('track_group_count',c_int),
-#                 ('track_groups',POINTER(POINTER(GrannyTrackGroup))),
-#                 ('animation_count',c_int),
-#                 ('animations',POINTER(POINTER(GrannyAnimation))),
-#                 ('extended_data',GrannyVariant)]
+class GrannyFileInfo(Structure):
+    """ granny file information """
+    _pack_ = 1
+    _fields_ = [
+                ('header',POINTER(GrannyFileArtToolInfo)),
+                ('exporter_info',POINTER(GrannyFileExporterInfo)),
+                ('file_name',c_char_p),
+                ('texture_count',c_int),
+                ('textures',POINTER(POINTER(GrannyTexture))),
+                ('material_count',c_int),
+                ('materials',POINTER(POINTER(GrannyMaterial))),
+                ('skeleton_count',c_int),
+                ('skeletons',POINTER(POINTER(GrannySkeleton))),
+                ('vertex_data_count',c_int),
+                ('vertex_datas',POINTER(POINTER(GrannyVertexData))),
+                ('tri_topology_count',c_int),
+                ('tri_topologies',POINTER(POINTER(GrannyTriTopology))),
+                ('mesh_count',c_int),
+                ('meshes',POINTER(POINTER(GrannyMesh))),
+                ('model_count',c_int),
+                ('models',POINTER(POINTER(GrannyModel))),
+                ('track_group_count',c_int),
+                ('track_groups',POINTER(POINTER(GrannyTrackGroup))),
+                ('animation_count',c_int),
+                ('animations',POINTER(POINTER(GrannyAnimation))),
+                ('extended_data',GrannyVariant)]
 
 
 class GrannyGRNSection(Structure):
