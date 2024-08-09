@@ -1,6 +1,6 @@
 """This loads a granny file and prints out some of its info."""
-from gr2_dll_funcs import granny_get_file_info, granny_get_grn_section_array, granny_read_entire_file
-from gr2_format import GrannyFile
+from granny_dll_funcs import granny_get_file_info, granny_get_grn_section_array, granny_read_entire_file
+from granny_formats import GrannyFile
 
 def print_file_stats(granny_file : GrannyFile):
     """This prints internal file statistics. """

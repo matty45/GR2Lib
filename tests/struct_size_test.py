@@ -1,6 +1,6 @@
 """This prints out the sizes of all granny related structs"""
 from ctypes import sizeof
-from gr2_format import*
+from granny_formats import*
 
 def check_granny_struct_sizes():
     """Checks sizes of granny related structs"""
