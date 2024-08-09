@@ -2,7 +2,8 @@
 # Import Ctypes so we can call functions from dlls.
 from ctypes import cdll, c_char_p, POINTER
 from granny_formats import GrannyFile, GrannyFileHeader, GrannyFileInfo, GrannyGRNSection
-GrannyDLL = cdll.LoadLibrary("C:\\Games\\Steam\\steamapps\\common\\HREK\\granny2_x64.dll")
+from gr2lib_settings import granny_dll_path
+GrannyDLL = cdll.LoadLibrary(granny_dll_path)
 
 
 def granny_get_version_string():

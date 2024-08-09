@@ -163,4 +163,4 @@ cython_debug/
 .vscode/settings.json
 
 # test gr2
-test_fbx_mongoose_render.gr2
+*.gr2

@@ -1,6 +1,6 @@
 """This loads a granny file and prints out some of its info."""
 from granny_dll_funcs import granny_get_file_info, granny_get_grn_section_array, granny_read_entire_file
-from granny_formats import GrannyFile
+from granny_formats import GrannyFile, GrannyFileInfo
 
 def print_file_stats(granny_file : GrannyFile):
     """This prints internal file statistics. """
@@ -20,13 +20,8 @@ def print_file_stats(granny_file : GrannyFile):
         else:
             print(f"Section {section_index} is empty or freed from memory.")
 
-def print_file_info_stats(granny_file : GrannyFile):
-    """This prints file info statistics. """
-    file_info = granny_get_file_info(granny_file)
-    if file_info == 0:
-        print("\nCould not get granny file information.")
-        return
-    
+def print_file_info_stats(file_info : GrannyFileInfo):
+    """This prints file info statistics. """    
     #Get source file used to make the granny file if applicable.
     if file_info.contents.file_name:
         print(f"\nSource file name: {file_info.contents.file_name.decode("UTF-8")}")
@@ -65,14 +60,19 @@ def print_file_info_stats(granny_file : GrannyFile):
     print(f"Track Groups: {file_info.contents.track_group_count}")
     print(f"Animations: {file_info.contents.animation_count}")
 
-def load_gr2_test(file_path : str):
-    #Ctypes requires a full path to the file, idk how to do relative lol.
+def load_test(file_path : str):
     file = granny_read_entire_file(file_path)
     if file:
         print("\nPrinting out basic granny file stats:")
         print_file_stats(file)
+        
+        file_info = granny_get_file_info(file)
+        if file_info == 0:
+            print("\nCould not get granny file information.")
+            return
+
         print("\nPrinting out basic granny file info stats:")
-        print_file_info_stats(file)
+        print_file_info_stats(file_info)
     else:
         print(f"\nCould not open {file_path}")
 
