@@ -27,22 +27,35 @@ def print_file_info_stats(granny_file : GrannyFile):
         print("\nCould not get granny file information.")
         return
     
+    #Get source file used to make the granny file if applicable.
+    if file_info.contents.file_name:
+        print(f"\nSource file name: {file_info.contents.file_name.decode("UTF-8")}")
+
     # Get art tool info
     if file_info.contents.art_tool_info:
        info_data = file_info.contents.art_tool_info.contents
        print("\nArt tool info:")
        print(f'File was made using \'{info_data.art_tool_name.decode("UTF-8")}\' Version: ({info_data.art_tool_major_revision}.{info_data.art_tool_minor_revision})')
 
+       print("\nArt tool coordinate info:")
        print(f"Units per meter: {info_data.units_per_meter}")
-
-       print(f"\nRight vector: {info_data.right_vector[0]} {info_data.right_vector[1]} {info_data.right_vector[2]}")
+       print(f"Right vector: {info_data.right_vector[0]} {info_data.right_vector[1]} {info_data.right_vector[2]}")
        print(f"Up vector: {info_data.up_vector[0]} {info_data.up_vector[1]} {info_data.up_vector[2]}")
        print(f"Back vector: {info_data.back_vector[0]} {info_data.back_vector[1]} {info_data.back_vector[2]}")
     else:
-        print ("No map tool info, this might break some granny dll functions.")
+        print ("No art tool info, this might break some granny dll functions.")
+
+    # Get exporter info
+    if file_info.contents.exporter_info:
+       export_info = file_info.contents.exporter_info.contents
+       print("\nExporter tool info:")
+       print(f'File was exported using \'{export_info.exporter_name.decode("UTF-8")}\' Version: ({export_info.exporter_major_revision}.{export_info.exporter_minor_revision}.{export_info.exporter_build_number}.{export_info.exporter_customization})')
+    else:
+        print ("No exporter tool info, this might break some granny dll functions.")
 
     #Get item counts
-    print(f"\nTextures: {file_info.contents.texture_count}")
+    print("\nObject counts:")
+    print(f"Textures: {file_info.contents.texture_count}")
     print(f"Materials: {file_info.contents.material_count}")
     print(f"Skeletons: {file_info.contents.skeleton_count}")
     print(f"Vertex datas: {file_info.contents.vertex_data_count}")
@@ -56,10 +69,12 @@ def load_gr2_test(file_path : str):
     #Ctypes requires a full path to the file, idk how to do relative lol.
     file = granny_read_entire_file(file_path)
     if file:
+        print("\nPrinting out basic granny file stats:")
         print_file_stats(file)
+        print("\nPrinting out basic granny file info stats:")
         print_file_info_stats(file)
     else:
-        print(f"Could not open {file_path}")
+        print(f"\nCould not open {file_path}")
 
 
 
