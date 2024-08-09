@@ -161,3 +161,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 .vscode/settings.json
+
+# test gr2
+test_fbx_mongoose_render.gr2
