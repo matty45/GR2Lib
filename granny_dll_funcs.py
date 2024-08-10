@@ -1,7 +1,7 @@
 """Contains all functions to be called from the Granny DLL"""
 # Import Ctypes so we can call functions from dlls.
 from ctypes import c_bool, c_float, c_int32, c_uint, cdll, c_char_p, POINTER
-from granny_formats import GrannyDataTypeDefinition, GrannyFile, GrannyFileHeader, GrannyFileInfo, GrannyGRNSection, GrannyTransform
+from granny_formats import GrannyDataTypeDefinition, GrannyFile, GrannyFileHeader, GrannyFileInfo, GrannyGRNSection, GrannyModel, GrannyModelInstance, GrannyTransform
 from gr2lib_settings import granny_dll_path
 GrannyDLL = cdll.LoadLibrary(granny_dll_path)
 
@@ -108,4 +108,11 @@ def granny_get_total_type_size(type_def : GrannyDataTypeDefinition):
     GrannyDLL.GrannyGetTotalTypeSize.argtypes=[POINTER(GrannyDataTypeDefinition)]
     GrannyDLL.GrannyGetTotalTypeSize.restype=c_int32
     result = GrannyDLL.GrannyGetTotalTypeSize(type_def)
+    return result
+
+def granny_instantiate_model(type_def : GrannyModel):
+    """Instantiates a model"""
+    GrannyDLL.GrannyInstantiateModel.argtypes=[POINTER(GrannyModel)]
+    GrannyDLL.GrannyInstantiateModel.restype=GrannyModelInstance
+    result = GrannyDLL.GrannyInstantiateModel(type_def)
     return result

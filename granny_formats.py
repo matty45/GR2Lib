@@ -1,5 +1,5 @@
 """Contains Granny struct and data information."""
-from ctypes import c_int, c_int32, c_ushort, c_void_p, c_bool, c_uint, c_char_p, c_float, c_ubyte, c_ulonglong, Structure, POINTER
+from ctypes import c_byte, c_int, c_int32, c_longlong, c_ushort, c_void_p, c_bool, c_uint, c_char_p, c_float, c_ubyte, c_ulonglong, Structure, POINTER
 from enum import IntEnum
 
 # Define the types we need.
@@ -335,6 +335,42 @@ class GrannyModel(Structure):
                 ('mesh_bindings',POINTER(GrannyModelMeshBinding)),
                 ('extended_data',GrannyVariant)]  
 
+
+#Cant implement this struct thanks to cpython bug: https://github.com/python/cpython/issues/100980
+# class GrannyModelControlBinding(Structure):
+#     """ model control binding data """
+#     _pack_ = 1
+#     pass
+
+class GrannyModelInstance(Structure):
+    """ model instance data """
+    _pack_ = 1
+    pass
+
+GrannyModelInstance._fields_ = [
+    ('model',POINTER(GrannyModel)),
+    ('cached_skeleton',POINTER(GrannySkeleton)),
+    ('cached_bones',POINTER(GrannyBone)),
+    ('cached_bone_count',c_longlong),
+    ('binding_sentinel',c_byte * 128), # GrannyModelControlBinding
+    ('mirror_transform_cache',POINTER(GrannyTransform)),
+    ('next',POINTER(GrannyModelInstance)),
+    ('prev',POINTER(GrannyModelInstance)),
+    ('user_data',c_void_p * 4),
+    ('reserved0',c_void_p)]  
+
+
+# GrannyModelControlBinding._fields_ = [
+#     ('control',POINTER(c_void_p)), #GrannyControl (Cant be bothered doing that struct right now.)
+#     ('control_prev',POINTER(GrannyModelControlBinding)),
+#     ('control_next',POINTER(GrannyModelControlBinding)),
+#     ('model_instance',POINTER(GrannyModelInstance)),
+#     ('model_prev',POINTER(GrannyModelControlBinding)),
+#     ('model_next',POINTER(GrannyModelControlBinding)),
+#     ('callbacks',c_void_p), #GrannyModelControlCallbacks (Cant be bothered doing that struct right now.)
+#     ('derived',c_uint * 16),
+#     ('binding_type',c_longlong)]  #GrannyModelControlBindingType
+    
 class GrannyCurve2(Structure):
     """ vertex curve animation data """
     _pack_ = 1

@@ -16,6 +16,8 @@ def check_granny_struct_sizes():
     assert sizeof(GrannyTransformTrack) == int(0x3c), 'GrannyVectorTrack struct size is wrong.'
     assert sizeof(GrannyVectorTrack) == int(0x20), 'GrannyVectorTrack struct size is wrong.'
     assert sizeof(GrannyTrackGroup) == int(0xa4), 'GrannyTrackGroup struct size is wrong.'
+    #assert sizeof(GrannyModelControlBinding) == int(0x80), 'GrannyModelControlBinding struct size is wrong.'
+    assert sizeof(GrannyModelInstance) == int(0xe0), 'GrannyModelInstance struct size is wrong.'
     assert sizeof(GrannyModelMeshBinding) == int(0x8), 'GrannyModelMeshBinding struct size is wrong.'
     assert sizeof(GrannyModel) == int(0x70), 'GrannyModel struct size is wrong.'
     assert sizeof(GrannyMesh) == int(0x4c), 'GrannyMesh struct size is wrong.'
