@@ -67,8 +67,8 @@ def load_test(file_path : str):
         print_file_stats(file)
         
         file_info = granny_get_file_info(file)
-        if file_info == 0:
-            print("\nCould not get granny file information.")
+        if file_info.contents is None:
+            print("Could not get file info..")
             return
 
         print("\nPrinting out basic granny file info stats:")

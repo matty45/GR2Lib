@@ -77,7 +77,7 @@ def extended_data_check_test(file_path : str):
     if file:
         file_info = granny_get_file_info(file)
         
-        if file_info == 0:
+        if file_info.contents is None:
             print("Could not get file info..")
             return
 

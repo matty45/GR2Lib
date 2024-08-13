@@ -1,6 +1,7 @@
 """This triggers all the tests to make sure things work correctly."""
 
 # Make sure we implemented the structs correctly or so help me god.
+from tests.basic_modify_test import basic_modify_test
 from tests.extended_data_check_test import extended_data_check_test
 from tests.basic_load_test import load_test
 from tests.struct_size_test import check_granny_struct_sizes
@@ -8,8 +9,10 @@ from tests.struct_size_test import check_granny_struct_sizes
 
 check_granny_struct_sizes()
 
-test_file_path = "any idle.gr2"
+test_file_path = "test_fbx_mongoose_render.gr2"
 
 load_test(test_file_path)
 
 extended_data_check_test(test_file_path)
+
+basic_modify_test(test_file_path)

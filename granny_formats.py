@@ -337,6 +337,7 @@ class GrannyModel(Structure):
 
 
 #Cant implement this struct thanks to cpython bug: https://github.com/python/cpython/issues/100980
+# If someone really needs this, make an issue, thanks.
 # class GrannyModelControlBinding(Structure):
 #     """ model control binding data """
 #     _pack_ = 1
