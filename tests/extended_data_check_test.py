@@ -71,7 +71,7 @@ def print_extended_data(file_info : GrannyFileInfo):
         
 
 
-def extended_data_check_test(file_path : str):
+def extended_data_check_test(file_path : str) -> bool:
 
     file = granny_read_entire_file(file_path)
     if file:
@@ -79,12 +79,14 @@ def extended_data_check_test(file_path : str):
         
         if file_info.contents is None:
             print("Could not get file info..")
-            return
+            return False
 
         print("\nPrinting out what parts of the granny file have custom extended data:")
         print_extended_data(file_info)
+        return True
     else:
         print(f"\nCould not open {file_path}")
+        return False
 
 
 

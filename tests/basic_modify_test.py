@@ -17,18 +17,22 @@ def modify_some_stuff(file_info : GrannyFileInfo):
     data_tree_writer = granny_begin_file_data_tree_writing(GrannyFileInfoType,file_info,0,0)
 
     if data_tree_writer:
-        result = granny_write_data_tree_to_file(data_tree_writer,0x80000037,GrannyGRNFileMV_ThisPlatform,"test_file.gr2",1)
-        print(result)
+        test_file_name = "test_file.gr2"
+        file_write_success = granny_write_data_tree_to_file(data_tree_writer,0x80000037,GrannyGRNFileMV_ThisPlatform,test_file_name,1)
+        if file_write_success:
+            print(f"Managed to edit and write a file to {test_file_name}!")
 
-def basic_modify_test(file_path : str):
+def basic_modify_test(file_path : str) -> bool:
     file = granny_read_entire_file(file_path)
     if file:
         file_info = granny_get_file_info(file)
         
         if file_info.contents is None:
             print("Could not get file info..")
-            return
+            return False
 
         modify_some_stuff(file_info)
+        return True
     else:
         print(f"\nCould not open {file_path}")
+        return False

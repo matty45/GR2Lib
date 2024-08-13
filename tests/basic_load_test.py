@@ -60,7 +60,7 @@ def print_file_info_stats(file_info : GrannyFileInfo):
     print(f"Track Groups: {file_info.contents.track_group_count}")
     print(f"Animations: {file_info.contents.animation_count}")
 
-def load_test(file_path : str):
+def load_test(file_path : str) -> bool:
     file = granny_read_entire_file(file_path)
     if file:
         print("\nPrinting out basic granny file stats:")
@@ -69,12 +69,14 @@ def load_test(file_path : str):
         file_info = granny_get_file_info(file)
         if file_info.contents is None:
             print("Could not get file info..")
-            return
+            return False
 
         print("\nPrinting out basic granny file info stats:")
         print_file_info_stats(file_info)
+        return True
     else:
         print(f"\nCould not open {file_path}")
+        return False
 
 
 
