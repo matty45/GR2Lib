@@ -1,4 +1,4 @@
-"""This will load a gr2 file, modify it and save it as a different file."""
+"""Basic Granny file modification test"""
 
 from granny_dll_funcs import granny_begin_file_data_tree_writing, granny_get_file_info, granny_read_entire_file, granny_write_data_tree_to_file
 from granny_dll_vars import GrannyFileInfoType, GrannyGRNFileMV_ThisPlatform
@@ -23,6 +23,7 @@ def modify_some_stuff(file_info : GrannyFileInfo):
             print(f"Managed to edit and write a file to {test_file_name}!")
 
 def basic_modify_test(file_path : str) -> bool:
+    """This will load a gr2 file, modify it and save it as a different file."""
     file = granny_read_entire_file(file_path)
     if file:
         file_info = granny_get_file_info(file)

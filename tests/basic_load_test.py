@@ -1,4 +1,4 @@
-"""This loads a granny file and prints out some of its info."""
+"""Basic Granny file loading test"""
 from granny_dll_funcs import granny_get_file_info, granny_get_grn_section_array, granny_read_entire_file
 from granny_formats import GrannyFile, GrannyFileInfo
 
@@ -61,6 +61,7 @@ def print_file_info_stats(file_info : GrannyFileInfo):
     print(f"Animations: {file_info.contents.animation_count}")
 
 def load_test(file_path : str) -> bool:
+    """This loads a granny file and prints out some of its info."""
     file = granny_read_entire_file(file_path)
     if file:
         print("\nPrinting out basic granny file stats:")

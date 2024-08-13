@@ -1,4 +1,4 @@
-"""This loads a granny file and checks and prints out what parts of it that have extended data."""
+"""Granny extended data check test"""
 from granny_dll_funcs import granny_get_file_info, granny_read_entire_file
 from granny_formats import GrannyFileInfo
 
@@ -72,7 +72,7 @@ def print_extended_data(file_info : GrannyFileInfo):
 
 
 def extended_data_check_test(file_path : str) -> bool:
-
+    """This loads a granny file and checks and prints out what parts of it that have extended data."""
     file = granny_read_entire_file(file_path)
     if file:
         file_info = granny_get_file_info(file)

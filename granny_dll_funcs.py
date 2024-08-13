@@ -1,7 +1,7 @@
 """Contains all functions to be called from the Granny DLL"""
 # Import Ctypes so we can call functions from dlls.
 from ctypes import c_bool, c_float, c_int32, c_uint, c_uint32, c_void_p, cdll, c_char_p, POINTER
-from granny_formats import GrannyDataTypeDefinition, GrannyFile, GrannyFileHeader, GrannyFileInfo, GrannyFileMagic, GrannyGRNSection, GrannyModel, GrannyModelInstance, GrannyTransform
+from granny_formats import GrannyDataTypeDefinition, GrannyFile, GrannyFileHeader, GrannyFileInfo, GrannyFileMagic, GrannyGRNSection, GrannyMesh, GrannyModel, GrannyModelInstance, GrannyTransform
 from gr2lib_settings import granny_dll_path
 GrannyDLL = cdll.LoadLibrary(granny_dll_path)
 
@@ -142,3 +142,17 @@ def granny_end_file_data_tree_writing(writer: c_void_p):
     """Used for writing gr2 files."""
     GrannyDLL.GrannyEndFileDataTreeWriting.argtypes=[c_void_p]
     GrannyDLL.GrannyEndFileDataTreeWriting(writer)
+
+def granny_get_mesh_vertex_type(mesh : GrannyMesh) -> GrannyDataTypeDefinition:
+    """Gets the vertex type used in the mesh"""
+    GrannyDLL.GrannyGetMeshVertexType.argtypes=[POINTER(GrannyMesh)]
+    GrannyDLL.GrannyGetMeshVertexType.restype=GrannyDataTypeDefinition
+    result = GrannyDLL.GrannyGetMeshVertexType(mesh)
+    return result
+
+def granny_get_mesh_vertices(mesh : GrannyMesh) -> c_void_p:
+    """Gets the vertices used in the mesh"""
+    GrannyDLL.GrannyGetMeshVertices.argtypes=[POINTER(GrannyMesh)]
+    GrannyDLL.GrannyGetMeshVertices.restype=c_void_p
+    result = GrannyDLL.GrannyGetMeshVertices(mesh)
+    return result
