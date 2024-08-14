@@ -1,7 +1,7 @@
 """Contains all functions to be called from the Granny DLL"""
 # Import Ctypes so we can call functions from dlls.
-from ctypes import c_bool, c_float, c_int32, c_uint, c_uint32, c_void_p, cdll, c_char_p, POINTER
-from granny_formats import GrannyDataTypeDefinition, GrannyFile, GrannyFileHeader, GrannyFileInfo, GrannyFileMagic, GrannyGRNSection, GrannyMesh, GrannyModel, GrannyModelInstance, GrannyTransform
+from ctypes import c_bool, c_float, c_int, c_int32, c_uint, c_uint32, c_void_p, cdll, c_char_p, POINTER
+from granny_formats import GrannyDataTypeDefinition, GrannyFile, GrannyFileHeader, GrannyFileInfo, GrannyFileMagic, GrannyGRNSection, GrannyLogCallback, GrannyMesh, GrannyModel, GrannyModelInstance, GrannyTransform
 from gr2lib_settings import granny_dll_path
 GrannyDLL = cdll.LoadLibrary(granny_dll_path)
 
@@ -156,3 +156,54 @@ def granny_get_mesh_vertices(mesh : GrannyMesh) -> c_void_p:
     GrannyDLL.GrannyGetMeshVertices.restype=c_void_p
     result = GrannyDLL.GrannyGetMeshVertices(mesh)
     return result
+
+def granny_set_log_file_name(file_name : str, clear : c_bool) -> c_bool:
+    """Sets a file for the granny dll to log to.
+    granny_set_log_file_name("c:/blargh.txt", true);
+    to turn off: granny_set_log_file_name(0, false);
+    """
+    file_name_bytes = file_name.encode()
+    GrannyDLL.GrannySetLogFileName.argtypes=[c_char_p, c_bool]
+    GrannyDLL.GrannySetLogFileName.restype=c_bool
+    result = GrannyDLL.GrannySetLogFileName(file_name_bytes)
+    return result
+
+def granny_get_log_callback(result : GrannyLogCallback):
+    """Granny logging function"""
+    GrannyDLL.GrannyGetLogCallback.argtypes=[POINTER(GrannyLogCallback)]
+    GrannyDLL.GrannyGetLogCallback(result)
+
+def granny_set_log_callback(result : GrannyLogCallback):
+    """Granny logging function"""
+    GrannyDLL.GrannySetLogCallback.argtypes=[POINTER(GrannyLogCallback)]
+    GrannyDLL.GrannySetLogCallback(result)
+
+def granny_get_log_message_type_string(message_type: c_int) -> c_char_p:
+    """Granny logging function"""
+    GrannyDLL.GrannyGetLogMessageTypeString.argtypes=[c_int]
+    GrannyDLL.GrannyGetLogMessageTypeString.restype=c_char_p
+    result = GrannyDLL.GrannyGetLogMessageTypeString(message_type)
+    return result
+
+def granny_get_log_message_origin_string(origin: c_int) -> c_char_p:
+    """Granny logging function"""
+    GrannyDLL.GrannyGetLogMessageOriginString.argtypes=[c_int]
+    GrannyDLL.GrannyGetLogMessageOriginString.restype=c_char_p
+    result = GrannyDLL.GrannyGetLogMessageOriginString(origin)
+    return result
+
+def granny_logging() -> c_bool:
+    """Granny logging function"""
+    GrannyDLL.GrannyLogging.restype=c_bool
+    result = GrannyDLL.GrannyLogging()
+    return result
+
+def granny_filter_message(origin: c_int, enabled : c_bool):
+    """Granny logging function"""
+    GrannyDLL.GrannyFilterMessage.argtypes=[c_int, c_bool]
+    GrannyDLL.GrannyFilterMessage(origin, enabled)
+
+def granny_filter_all_messages(enabled: c_bool):
+    """Granny logging function"""
+    GrannyDLL.GrannyFilterAllMessages.argtypes=[c_bool]
+    GrannyDLL.GrannyFilterAllMessages(enabled)

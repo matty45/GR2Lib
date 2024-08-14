@@ -1,5 +1,5 @@
 """Contains Granny struct and data information."""
-from ctypes import c_byte, c_int, c_int32, c_longlong, c_ushort, c_void_p, c_bool, c_uint, c_char_p, c_float, c_ubyte, c_ulonglong, Structure, POINTER
+from ctypes import CFUNCTYPE, c_byte, c_int, c_int32, c_longlong, c_ushort, c_void_p, c_bool, c_uint, c_char_p, c_float, c_ubyte, c_ulonglong, Structure, POINTER
 from enum import IntEnum
 
 # Define the types we need.
@@ -500,3 +500,10 @@ class GrannyGRNSection(Structure):
                 ('pointer_fixup_array_count',c_uint),
                 ('mixed_marshalling_fixup_array_offset',c_uint),
                 ('mixed_marshalling_fixup_array_count',c_uint)]
+
+class GrannyLogCallback(Structure):
+    """ granny file section """
+    _pack_ = 1
+    _fields_ = [
+                ('function',CFUNCTYPE(c_int,c_int,c_char_p,c_int,c_char_p,c_void_p)),
+                ('user_data',c_void_p)]
