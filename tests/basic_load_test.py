@@ -24,7 +24,7 @@ def print_file_info_stats(file_info : GrannyFileInfo):
     """This prints file info statistics. """    
     #Get source file used to make the granny file if applicable.
     if file_info.contents.file_name:
-        print(f"\nSource file name: {file_info.contents.file_name.decode("UTF-8")}")
+        print(f"\nSource file name: {file_info.contents.file_name.decode('UTF-8')}")
 
     # Get art tool info
     if file_info.contents.art_tool_info:
