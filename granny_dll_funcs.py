@@ -207,3 +207,14 @@ def granny_filter_all_messages(enabled: c_bool):
     """Granny logging function"""
     GrannyDLL.GrannyFilterAllMessages.argtypes=[c_bool]
     GrannyDLL.GrannyFilterAllMessages(enabled)
+
+def granny_set_vertex_color(vertex_layout: GrannyDataTypeDefinition, vertex_pointer : c_void_p, colour_index: c_int32, color: c_float):
+    GrannyDLL.GrannySetVertexColor.argtypes=[POINTER(GrannyDataTypeDefinition),c_void_p,c_int32,POINTER(c_float)]
+    GrannyDLL.GrannySetVertexColor(vertex_layout,vertex_pointer,colour_index,color)
+
+def granny_get_mesh_is_rigid(mesh: GrannyMesh) -> c_bool:
+    """Checks if the mesh is rigid."""
+    GrannyDLL.GrannyMeshIsRigid.argtypes=[POINTER(GrannyMesh)]
+    GrannyDLL.GrannyMeshIsRigid.restype=c_bool
+    result = GrannyDLL.GrannyMeshIsRigid(mesh)
+    return result
