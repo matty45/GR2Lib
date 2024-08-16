@@ -218,3 +218,20 @@ def granny_get_mesh_is_rigid(mesh: GrannyMesh) -> c_bool:
     GrannyDLL.GrannyMeshIsRigid.restype=c_bool
     result = GrannyDLL.GrannyMeshIsRigid(mesh)
     return result
+
+def granny_new_memory_arena() -> c_void_p:
+    GrannyDLL.GrannyNewMemoryArena.restype=c_void_p
+    result = GrannyDLL.GrannyNewMemoryArena()
+    return result
+
+def granny_new_string_table() -> c_void_p:
+    GrannyDLL.GrannyNewStringTable.restype=c_void_p
+    result = GrannyDLL.GrannyNewStringTable()
+    return result
+
+def granny_new_arena_string_table(memory_arena: c_void_p) -> c_void_p:
+    GrannyDLL.GrannyNewArenaStringTable.argtypes=[c_void_p]
+    GrannyDLL.GrannyNewArenaStringTable.restype=c_void_p
+    result = GrannyDLL.GrannyNewArenaStringTable(memory_arena)
+    return result
+    
