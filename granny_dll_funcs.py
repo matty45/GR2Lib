@@ -1,7 +1,7 @@
 """Contains all functions to be called from the Granny DLL"""
 # Import Ctypes so we can call functions from dlls.
 from ctypes import c_bool, c_float, c_int, c_int32, c_uint, c_uint32, c_void_p, cdll, c_char_p, POINTER
-from granny_formats import GrannyDataTypeDefinition, GrannyFile, GrannyFileHeader, GrannyFileInfo, GrannyFileMagic, GrannyGRNSection, GrannyLogCallback, GrannyMesh, GrannyModel, GrannyModelInstance, GrannyTransform
+from granny_formats import GrannyDataTypeDefinition, GrannyFile, GrannyFileHeader, GrannyFileInfo, GrannyFileMagic, GrannyGRNSection, GrannyLogCallback, GrannyMemoryArena, GrannyMesh, GrannyModel, GrannyModelInstance, GrannyStringTable, GrannyTransform
 from gr2lib_settings import granny_dll_path
 GrannyDLL = cdll.LoadLibrary(granny_dll_path)
 
@@ -114,7 +114,7 @@ def granny_get_total_type_size(type_def : GrannyDataTypeDefinition) -> c_int32:
 def granny_instantiate_model(type_def : GrannyModel) -> GrannyModelInstance:
     """Instantiates a model"""
     GrannyDLL.GrannyInstantiateModel.argtypes=[POINTER(GrannyModel)]
-    GrannyDLL.GrannyInstantiateModel.restype=GrannyModelInstance
+    GrannyDLL.GrannyInstantiateModel.restype=POINTER(GrannyModelInstance)
     result = GrannyDLL.GrannyInstantiateModel(type_def)
     return result
 
@@ -126,7 +126,7 @@ def granny_free_model_instance(model_instance : GrannyModelInstance):
 def granny_begin_file_data_tree_writing(root_object_type_def : GrannyDataTypeDefinition, root_object : c_void_p, default_type_section_index : c_int32, default_object_section_index : c_int32) -> c_void_p:
     """Used for writing gr2 files."""
     GrannyDLL.GrannyBeginFileDataTreeWriting.argtypes=[POINTER(GrannyDataTypeDefinition), c_void_p, c_int32, c_int32]
-    GrannyDLL.GrannyBeginFileDataTreeWriting.restype=c_void_p
+    GrannyDLL.GrannyBeginFileDataTreeWriting.restype=c_void_p # POINTER(GrannyFileDataTreeWriter) TODO
     result = GrannyDLL.GrannyBeginFileDataTreeWriting(root_object_type_def, root_object, default_type_section_index, default_object_section_index)
     return result
 
@@ -219,19 +219,19 @@ def granny_get_mesh_is_rigid(mesh: GrannyMesh) -> c_bool:
     result = GrannyDLL.GrannyMeshIsRigid(mesh)
     return result
 
-def granny_new_memory_arena() -> c_void_p:
-    GrannyDLL.GrannyNewMemoryArena.restype=c_void_p
+def granny_new_memory_arena() -> GrannyMemoryArena:
+    GrannyDLL.GrannyNewMemoryArena.restype=POINTER(GrannyMemoryArena)
     result = GrannyDLL.GrannyNewMemoryArena()
     return result
 
-def granny_new_string_table() -> c_void_p:
-    GrannyDLL.GrannyNewStringTable.restype=c_void_p
+def granny_new_string_table() -> GrannyStringTable:
+    GrannyDLL.GrannyNewStringTable.restype=POINTER(GrannyStringTable)
     result = GrannyDLL.GrannyNewStringTable()
     return result
 
-def granny_new_arena_string_table(memory_arena: c_void_p) -> c_void_p:
-    GrannyDLL.GrannyNewArenaStringTable.argtypes=[c_void_p]
-    GrannyDLL.GrannyNewArenaStringTable.restype=c_void_p
+def granny_new_arena_string_table(memory_arena: GrannyMemoryArena) -> GrannyStringTable:
+    GrannyDLL.GrannyNewArenaStringTable.argtypes=[POINTER(GrannyMemoryArena)]
+    GrannyDLL.GrannyNewArenaStringTable.restype=POINTER(GrannyStringTable)
     result = GrannyDLL.GrannyNewArenaStringTable(memory_arena)
     return result
     

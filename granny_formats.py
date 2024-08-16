@@ -507,3 +507,71 @@ class GrannyLogCallback(Structure):
     _fields_ = [
                 ('function',CFUNCTYPE(c_int,c_int,c_char_p,c_int,c_char_p,c_void_p)),
                 ('user_data',c_void_p)]
+
+class GrannyStringTreeEntry(Structure):
+    """ granny string stuff """
+    _pack_ = 1
+    pass
+
+GrannyStringTreeEntry._fields_ = [
+                ('string',c_char_p),
+                ('left',POINTER(GrannyStringTreeEntry)),
+                ('right',POINTER(GrannyStringTreeEntry))]
+
+class GrannyStringTree(Structure):
+    """ granny string stuff """
+    _pack_ = 1
+    _fields_ = [
+                ('unused',POINTER(GrannyStringTreeEntry)),
+                ('first',POINTER(GrannyStringTreeEntry)),
+                ('last',POINTER(GrannyStringTreeEntry)),
+                ('root',POINTER(GrannyStringTreeEntry)),
+                ('container_buffers_member',c_void_p)]
+
+class GrannyMemoryArena(Structure):
+    """ granny memory stuff """
+    _pack_ = 1
+    pass
+
+GrannyMemoryArena._fields_ = [
+                ('data_start',c_ulonglong),
+                ('next',POINTER(GrannyMemoryArena))]
+
+class GrannyStringTableBlock(Structure):
+    """ granny string stuff """
+    _pack_ = 1
+    pass
+
+GrannyStringTableBlock._fields_ = [
+                ('data_start',c_char_p),
+                ('one_past_last_data',c_char_p),
+                ('last',POINTER(GrannyStringTableBlock))]
+
+class GrannyStringTable(Structure):
+    """ granny string stuff """
+    _pack_ = 1
+    _fields_ = [
+                ('tree',GrannyStringTree),
+                ('block_size',c_int),
+                ('last_block',POINTER(GrannyStringTableBlock)),
+                ('arena',POINTER(GrannyMemoryArena))]
+
+class GrannyVariantMemberBuilder(Structure):
+    """ granny variant stuff """
+    _pack_ = 1
+    pass
+
+GrannyVariantMemberBuilder._fields_ = [
+                ('type',GrannyDataTypeDefinition),
+                ('data',c_void_p),
+                ('next',POINTER(GrannyVariantMemberBuilder))]
+
+class GrannyVariantBuilder(Structure):
+    """ granny variant stuff """
+    _pack_ = 1
+    _fields_ = [
+                ('strings',POINTER(GrannyStringTable)),
+                ('member_count',c_int),
+                ('total_object_size',c_int),
+                ('first_member',POINTER(GrannyVariantMemberBuilder)),
+                ('last_member',POINTER(GrannyVariantMemberBuilder))]
