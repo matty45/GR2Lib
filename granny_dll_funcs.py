@@ -1,7 +1,7 @@
 """Contains all functions to be called from the Granny DLL"""
 # Import Ctypes so we can call functions from dlls.
 from ctypes import c_bool, c_float, c_int, c_int32, c_uint, c_uint32, c_void_p, cdll, c_char_p, POINTER
-from granny_formats import GrannyDataTypeDefinition, GrannyFile, GrannyFileHeader, GrannyFileInfo, GrannyFileMagic, GrannyGRNSection, GrannyLogCallback, GrannyMemoryArena, GrannyMesh, GrannyModel, GrannyModelInstance, GrannyStringTable, GrannyTransform
+from granny_formats import GrannyDataTypeDefinition, GrannyFile, GrannyFileDataTreeWriter, GrannyFileHeader, GrannyFileInfo, GrannyFileMagic, GrannyGRNSection, GrannyLogCallback, GrannyMemoryArena, GrannyMesh, GrannyModel, GrannyModelInstance, GrannyStringTable, GrannyTransform
 from gr2lib_settings import granny_dll_path
 GrannyDLL = cdll.LoadLibrary(granny_dll_path)
 
@@ -126,7 +126,7 @@ def granny_free_model_instance(model_instance : GrannyModelInstance):
 def granny_begin_file_data_tree_writing(root_object_type_def : GrannyDataTypeDefinition, root_object : c_void_p, default_type_section_index : c_int32, default_object_section_index : c_int32) -> c_void_p:
     """Used for writing gr2 files."""
     GrannyDLL.GrannyBeginFileDataTreeWriting.argtypes=[POINTER(GrannyDataTypeDefinition), c_void_p, c_int32, c_int32]
-    GrannyDLL.GrannyBeginFileDataTreeWriting.restype=c_void_p # POINTER(GrannyFileDataTreeWriter) TODO
+    GrannyDLL.GrannyBeginFileDataTreeWriting.restype=POINTER(GrannyFileDataTreeWriter)
     result = GrannyDLL.GrannyBeginFileDataTreeWriting(root_object_type_def, root_object, default_type_section_index, default_object_section_index)
     return result
 

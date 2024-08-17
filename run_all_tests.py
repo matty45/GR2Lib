@@ -3,6 +3,7 @@
 from tests.basic_modify_test import basic_modify_test
 from tests.extended_data_check_test import extended_data_check_test
 from tests.basic_load_test import load_test
+from tests.extended_data_parse_test import parse_extended_data_test
 from tests.file_creation_test import file_creation_test
 from tests.vertex_modify_test import vertex_modify_test
 from tests.vertex_type_parse_test import vertex_type_parse_test
@@ -26,6 +27,10 @@ if load_test(test_file_path):
 print("\nTriggering extended data check test.")
 if extended_data_check_test(test_file_path):
     print("\nExtended data check test completed successfully!")
+
+print("\nTriggering extended data parse test.")
+if parse_extended_data_test(test_file_path):
+    print("\nExtended data parse test completed successfully!")
 
 print("\nTriggering vertex type parse test.")
 if vertex_type_parse_test(test_file_path):

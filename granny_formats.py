@@ -575,3 +575,89 @@ class GrannyVariantBuilder(Structure):
                 ('total_object_size',c_int),
                 ('first_member',POINTER(GrannyVariantMemberBuilder)),
                 ('last_member',POINTER(GrannyVariantMemberBuilder))]
+
+class GrannyWrittenType(Structure):
+    """ granny memory stuff """
+    _pack_ = 1
+    pass
+
+GrannyWrittenType._fields_ = [
+        ('signature',c_uint),
+        ('type',POINTER(GrannyDataTypeDefinition)),
+        ('left',POINTER(GrannyWrittenType)),
+        ('right',POINTER(GrannyWrittenType)),
+        ('next',POINTER(GrannyWrittenType)),
+        ('previous',POINTER(GrannyWrittenType))]
+
+class GrannyWrittenTypeRegistry(Structure):
+    """ granny memory stuff """
+    _pack_ = 1
+    _fields_ = [
+        ('unused',POINTER(GrannyWrittenType)),
+        ('first',POINTER(GrannyWrittenType)),
+        ('last',POINTER(GrannyWrittenType)),
+        ('root',POINTER(GrannyWrittenType)),
+        ('container_buffers_member',c_void_p),]
+
+class GrannyHashEntry(Structure):
+    """ granny memory stuff """
+    _pack_ = 1
+    pass
+
+GrannyHashEntry._fields_ = [
+        ('key',c_void_p),
+        ('data',c_void_p),
+        ('left',POINTER(GrannyHashEntry)),
+        ('right',POINTER(GrannyHashEntry))]
+
+class GrannyPointerHash(Structure):
+    """ granny memory stuff """
+    _pack_ = 1
+    _fields_ = [
+        ('unused',POINTER(GrannyHashEntry)),
+        ('first',POINTER(GrannyHashEntry)),
+        ('last',POINTER(GrannyHashEntry)),
+        ('root',POINTER(GrannyHashEntry)),
+        ('container_buffers_member',c_void_p),]
+
+class GrannyAllocatedBlock(Structure):
+    """ granny memory stuff """
+    _pack_ = 1
+    pass
+
+GrannyAllocatedBlock._fields_ = [
+        ('used_unit_count',c_int),
+        ('base',POINTER(c_ubyte)),
+        ('first_index',c_int),
+        ('previous',POINTER(GrannyAllocatedBlock))]
+
+class GrannyStackAllocator(Structure):
+    """ granny memory stuff """
+    _pack_ = 1
+    _fields_ = [
+        ('unit_size',c_int),
+        ('units_per_block',c_int),
+        ('total_used_unit_count',c_int),
+        ('last_block',POINTER(GrannyAllocatedBlock)),
+        ('max_units',c_int),
+        ('active_blocks',c_int),
+        ('max_active_blocks',c_int),
+        ('block_directory',POINTER(POINTER(GrannyAllocatedBlock)))]
+
+class GrannyFileDataTreeWriter(Structure):
+    """ granny file data stuff """
+    _pack_ = 1
+    _fields_ = [
+        ('root_object_type_definition',POINTER(GrannyDataTypeDefinition)),
+        ('root_object',c_void_p),
+        ('traversal_number',c_int),
+        ('flags',c_uint),
+        ('default_type_section_index',c_int),
+        ('default_object_section_index',c_int),
+        ('object_blocks',GrannyStackAllocator),
+        ('block_hash',POINTER(GrannyPointerHash)),
+        ('string_callback',CFUNCTYPE(c_uint,c_void_p,c_char_p)),
+        ('string_callback_data',c_void_p),
+        ('written_type_registry',GrannyWrittenTypeRegistry),
+        ('source_file_for_sectioning',POINTER(GrannyFile)),
+        ('source_file_for_formats',POINTER(GrannyFile))]

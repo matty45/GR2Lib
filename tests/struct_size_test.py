@@ -53,6 +53,13 @@ def check_granny_struct_sizes():
     assert sizeof(GrannyMemoryArena) == int(0x10), 'GrannyMemoryArena struct size is wrong.' 
     assert sizeof(GrannyStringTree) == int(0x28), 'GrannyStringTree struct size is wrong.' 
     assert sizeof(GrannyStringTreeEntry) == int(0x18), 'GrannyStringTreeEntry struct size is wrong.'  
+    assert sizeof(GrannyFileDataTreeWriter) == int(0x98), 'GrannyFileDataTreeWriter struct size is wrong.' 
+    assert sizeof(GrannyStackAllocator) == int(0x28), 'GrannyStackAllocator struct size is wrong.' 
+    assert sizeof(GrannyPointerHash) == int(0x28), 'GrannyPointerHash struct size is wrong.' 
+    assert sizeof(GrannyHashEntry) == int(0x20), 'GrannyHashEntry struct size is wrong.' 
+    assert sizeof(GrannyWrittenType) == int(0x2c), 'GrannyWrittenType struct size is wrong.'  
+    assert sizeof(GrannyWrittenTypeRegistry) == int(0x28), 'GrannyWrittenTypeRegistry struct size is wrong.'  
+    assert sizeof(GrannyAllocatedBlock) == int(0x18), 'GrannyAllocatedBlock struct size is wrong.'  
     
     print("Your good to go! All struct sizes specified in check_granny_struct_sizes() are correct.")
 
