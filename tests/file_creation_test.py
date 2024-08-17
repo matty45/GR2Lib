@@ -1,9 +1,9 @@
 """Basic Granny file creation test"""
 
-from ctypes import pointer
+from ctypes import POINTER, Structure, byref, c_char_p, c_void_p, cast, pointer
 from granny_dll_funcs import granny_begin_file_data_tree_writing, granny_write_data_tree_to_file
 from granny_dll_vars import GrannyFileInfoType, GrannyGRNFileMV_ThisPlatform
-from granny_formats import GrannyFileArtToolInfo, GrannyFileExporterInfo, GrannyFileInfo
+from granny_formats import GrannyDataTypeDefinition, GrannyFileArtToolInfo, GrannyFileExporterInfo, GrannyFileInfo, GrannyMaterial
 
 def create_basic_art_tool_info() -> GrannyFileArtToolInfo:
     tool_info = GrannyFileArtToolInfo()
@@ -21,6 +21,39 @@ def create_basic_exporter_tool_info() -> GrannyFileExporterInfo:
     return exporter_info
 
 
+def create_test_material(file_info : GrannyFileInfo):
+    materials = []
+    materials.append(GrannyMaterial(name=b"Test Material"))
+
+    Array = POINTER(GrannyMaterial) * len(materials)
+    granny_materials = Array()
+    
+    for i, mat in enumerate(materials):
+            granny_materials[i] = pointer(mat)
+            
+    file_info.material_count = len(materials)
+    file_info.materials = granny_materials
+
+class CustomExtendedData(Structure):
+    """ Custom extended data, ditto """
+    _pack_ = 1
+    _fields_ = [
+                ('test_string',c_char_p)]
+
+def add_custom_data_to_test_material(file_info: GrannyFileInfo):
+
+    CustomExtendedDataType = (GrannyDataTypeDefinition * 2)()
+    CustomExtendedDataType[0] = GrannyDataTypeDefinition(member_type=8,name = b"TestString")
+    CustomExtendedDataType[1] = GrannyDataTypeDefinition(member_type=0)
+
+    file_info.materials.contents.contents.extended_data.type = CustomExtendedDataType
+    
+    crap = CustomExtendedData(test_string = b"lol")
+
+    file_info.materials.contents.contents.extended_data.object = cast(pointer(crap), c_void_p)
+
+
+
 def create_empty_granny_file(file_path : str):
 
     # Create empty file_info
@@ -33,6 +66,10 @@ def create_empty_granny_file(file_path : str):
     file_info.exporter_tool_info = pointer(create_basic_exporter_tool_info())
 
     file_info.file_name = file_path.encode()
+
+    #Add a test material with custom extended data
+    create_test_material(file_info)
+    add_custom_data_to_test_material(file_info)
 
     # Write file
 
