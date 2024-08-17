@@ -1,6 +1,6 @@
 """Basic Granny file creation test"""
 
-from ctypes import POINTER, Structure, byref, c_char_p, c_void_p, cast, pointer
+from ctypes import POINTER, Structure, c_char_p, c_void_p, cast, pointer
 from granny_dll_funcs import granny_begin_file_data_tree_writing, granny_write_data_tree_to_file
 from granny_dll_vars import GrannyFileInfoType, GrannyGRNFileMV_ThisPlatform
 from granny_formats import GrannyDataTypeDefinition, GrannyFileArtToolInfo, GrannyFileExporterInfo, GrannyFileInfo, GrannyMaterial

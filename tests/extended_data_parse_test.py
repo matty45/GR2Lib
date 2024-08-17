@@ -2,7 +2,7 @@
 
 #You find this information inside of granny viewer if you view the meshes in detail. Materials::ExtendedData
 #This example uses the material extended data that the mod tools for halo reach and up use.
-from ctypes import POINTER, Structure, byref, c_char_p, cast
+from ctypes import POINTER, Structure, c_char_p, cast
 
 from granny_dll_funcs import granny_get_file_info, granny_read_entire_file
 from granny_formats import GrannyFileInfo
