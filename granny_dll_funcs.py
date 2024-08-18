@@ -234,4 +234,12 @@ def granny_new_arena_string_table(memory_arena: GrannyMemoryArena) -> GrannyStri
     GrannyDLL.GrannyNewArenaStringTable.restype=POINTER(GrannyStringTable)
     result = GrannyDLL.GrannyNewArenaStringTable(memory_arena)
     return result
+
+def granny_set_transform_with_identity_check(result: GrannyTransform, position_3: c_float, orientation4: c_float, scale_shear_3x3: c_float):
+    GrannyDLL.GrannySetTransformWithIdentityCheck.argtypes=[POINTER(GrannyTransform),POINTER(c_float),POINTER(c_float),POINTER(c_float)]
+    GrannyDLL.GrannySetTransformWithIdentityCheck(result,position_3,orientation4,scale_shear_3x3)
+
+def granny_set_transform(result: GrannyTransform, position_3: c_float, orientation4: c_float, scale_shear_3x3: c_float):
+    GrannyDLL.GrannySetTransform.argtypes=[POINTER(GrannyTransform),POINTER(c_float),POINTER(c_float),POINTER(c_float)]
+    GrannyDLL.GrannySetTransform(result,position_3,orientation4,scale_shear_3x3)
     
