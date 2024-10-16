@@ -1,7 +1,7 @@
 """Contains all functions to be called from the Granny DLL"""
 # Import Ctypes so we can call functions from dlls.
 from ctypes import c_bool, c_float, c_int, c_int32, c_uint, c_uint32, c_void_p, cdll, c_char_p, POINTER
-from granny_formats import GrannyDataTypeDefinition, GrannyFile, GrannyFileDataTreeWriter, GrannyFileHeader, GrannyFileInfo, GrannyFileMagic, GrannyGRNSection, GrannyLogCallback, GrannyMemoryArena, GrannyMesh, GrannyModel, GrannyModelInstance, GrannyStringTable, GrannyTransform
+from granny_formats import GrannyDataTypeDefinition, GrannyFile, GrannyFileDataTreeWriter, GrannyFileHeader, GrannyFileInfo, GrannyFileMagic, GrannyGRNSection, GrannyLogCallback, GrannyMemoryArena, GrannyMesh, GrannyModel, GrannyModelInstance, GrannyStringTable, GrannyTransform, GrannyVariantBuilder
 from gr2lib_settings import granny_dll_path
 GrannyDLL = cdll.LoadLibrary(granny_dll_path)
 
@@ -242,4 +242,77 @@ def granny_set_transform_with_identity_check(result: GrannyTransform, position_3
 def granny_set_transform(result: GrannyTransform, position_3: c_float, orientation4: c_float, scale_shear_3x3: c_float):
     GrannyDLL.GrannySetTransform.argtypes=[POINTER(GrannyTransform),POINTER(c_float),POINTER(c_float),POINTER(c_float)]
     GrannyDLL.GrannySetTransform(result,position_3,orientation4,scale_shear_3x3)
-    
+
+def granny_begin_variant(string_table_builder: GrannyStringTable) -> GrannyVariantBuilder:
+    GrannyDLL.GrannyBeginVariant.argtypes=[POINTER(GrannyStringTable)]
+    GrannyDLL.GrannyBeginVariant.restype=POINTER(GrannyVariantBuilder)
+    result = GrannyDLL.GrannyBeginVariant(string_table_builder)
+    return result
+
+def granny_end_variant(builder: GrannyVariantBuilder, type: GrannyDataTypeDefinition, object: c_void_p) -> c_void_p:
+    GrannyDLL.GrannyEndVariant.argtypes=[POINTER(GrannyVariantBuilder),POINTER(POINTER(GrannyDataTypeDefinition)),POINTER(c_void_p)]
+    GrannyDLL.GrannyEndVariant.restype=c_void_p
+    result = GrannyDLL.GrannyEndVariant(builder,type,object)
+    return result
+
+def granny_abort_variant(granny_variant_builder: GrannyVariantBuilder):
+    GrannyDLL.GrannyAbortVariant.argtypes=[POINTER(GrannyVariantBuilder)]
+    GrannyDLL.GrannyAbortVariant(granny_variant_builder)
+
+def granny_get_resulting_variant_type_size(builder: GrannyVariantBuilder) -> c_int32:
+    GrannyDLL.GrannyGetResultingVariantTypeSize.argtypes=[POINTER(GrannyVariantBuilder)]
+    GrannyDLL.GrannyGetResultingVariantTypeSize.restype=c_int32
+    result = GrannyDLL.GrannyGetResultingVariantTypeSize(builder)
+    return result
+
+def granny_get_resulting_variant_object_size(builder: GrannyVariantBuilder) -> c_int32:
+    GrannyDLL.GrannyGetResultingVariantObjectSize.argtypes=[POINTER(GrannyVariantBuilder)]
+    GrannyDLL.GrannyGetResultingVariantObjectSize.restype=c_int32
+    result = GrannyDLL.GrannyGetResultingVariantObjectSize(builder)
+    return result
+
+def granny_end_variant_in_place(builder: GrannyVariantBuilder,type_memory: c_void_p, type: GrannyDataTypeDefinition,object_memory: c_void_p, object: c_void_p) -> c_bool:
+    GrannyDLL.GrannyEndVariantInPlace.argtypes=[POINTER(GrannyVariantBuilder),c_void_p,POINTER(POINTER(GrannyDataTypeDefinition)),c_void_p,POINTER(c_void_p)]
+    GrannyDLL.GrannyEndVariantInPlace.restype=c_bool
+    result = GrannyDLL.GrannyEndVariantInPlace(builder,type_memory,type,object_memory,object)
+    return result
+
+def granny_add_bool_member(granny_variant_builder: GrannyVariantBuilder, name: c_char_p, value:c_int):
+    GrannyDLL.GrannyAddBoolMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,c_int]
+    GrannyDLL.GrannyAddBoolMember(granny_variant_builder,name,value)
+
+def granny_add_bool_array_member(granny_variant_builder: GrannyVariantBuilder, name: c_char_p, width: c_int32, value:c_int):
+    GrannyDLL.GrannyAddBoolArrayMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,c_int32,POINTER(c_int)]
+    GrannyDLL.GrannyAddBoolArrayMember(granny_variant_builder,name,width,value)
+
+def granny_add_integer_member(granny_variant_builder: GrannyVariantBuilder, name: c_char_p, value: c_int32):
+    GrannyDLL.GrannyAddIntegerMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,c_int32]
+    GrannyDLL.GrannyAddIntegerMember(granny_variant_builder,name,value)
+
+def granny_add_integer_array_member(granny_variant_builder: GrannyVariantBuilder, name: c_char_p, width: c_int32, value:c_int32):
+    GrannyDLL.GrannyAddIntegerArrayMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,c_int32,POINTER(c_int32)]
+    GrannyDLL.GrannyAddIntegerArrayMember(granny_variant_builder,name,width,value)
+
+def granny_add_unsigned_integer_member(granny_variant_builder: GrannyVariantBuilder, name: c_char_p, value: c_uint32):
+    GrannyDLL.GrannyAddUnsignedIntegerMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,c_uint32]
+    GrannyDLL.GrannyAddUnsignedIntegerMember(granny_variant_builder,name,value)
+
+def granny_add_scalar_member(granny_variant_builder: GrannyVariantBuilder, name: c_char_p, value: c_float):
+    GrannyDLL.GrannyAddScalarMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,c_float]
+    GrannyDLL.GrannyAddScalarMember(granny_variant_builder,name,value)
+
+def granny_add_scalar_array_member(granny_variant_builder: GrannyVariantBuilder, name: c_char_p, width: c_int32, value:c_float):
+    GrannyDLL.GrannyAddScalarArrayMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,c_int32,POINTER(c_float)]
+    GrannyDLL.GrannyAddScalarArrayMember(granny_variant_builder,name,width,value)
+
+def granny_add_string_member(granny_variant_builder: GrannyVariantBuilder, name: c_char_p, value: c_char_p):
+    GrannyDLL.GrannyAddStringMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,c_char_p]
+    GrannyDLL.GrannyAddStringMember(granny_variant_builder,name,value)
+
+def granny_add_reference_member(granny_variant_builder: GrannyVariantBuilder, name: c_char_p, type: GrannyDataTypeDefinition,value: c_void_p):
+    GrannyDLL.GrannyAddReferenceMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,POINTER(GrannyDataTypeDefinition),c_void_p]
+    GrannyDLL.GrannyAddReferenceMember(granny_variant_builder,name,type,value)
+
+def granny_add_dynamic_array_member(builder: GrannyVariantBuilder, name: c_char_p, count: c_int32, entry_type: GrannyDataTypeDefinition, array_entries: c_void_p):
+    GrannyDLL.GrannyAddDynamicArrayMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,c_int32,POINTER(GrannyDataTypeDefinition),c_void_p]
+    GrannyDLL.GrannyAddDynamicArrayMember(builder,name,count,entry_type,array_entries)
