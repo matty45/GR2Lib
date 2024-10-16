@@ -305,14 +305,14 @@ def granny_add_scalar_array_member(granny_variant_builder: GrannyVariantBuilder,
     GrannyDLL.GrannyAddScalarArrayMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,c_int32,POINTER(c_float)]
     GrannyDLL.GrannyAddScalarArrayMember(granny_variant_builder,name,width,value)
 
-def granny_add_string_member(granny_variant_builder: GrannyVariantBuilder, name: c_char_p, value: c_char_p):
+def granny_add_string_member(granny_variant_builder: GrannyVariantBuilder, name: str, value: str):
     GrannyDLL.GrannyAddStringMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,c_char_p]
-    GrannyDLL.GrannyAddStringMember(granny_variant_builder,name,value)
+    GrannyDLL.GrannyAddStringMember(granny_variant_builder,name.encode(),value.encode())
 
 def granny_add_reference_member(granny_variant_builder: GrannyVariantBuilder, name: c_char_p, type: GrannyDataTypeDefinition,value: c_void_p):
     GrannyDLL.GrannyAddReferenceMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,POINTER(GrannyDataTypeDefinition),c_void_p]
     GrannyDLL.GrannyAddReferenceMember(granny_variant_builder,name,type,value)
 
-def granny_add_dynamic_array_member(builder: GrannyVariantBuilder, name: c_char_p, count: c_int32, entry_type: GrannyDataTypeDefinition, array_entries: c_void_p):
+def granny_add_dynamic_array_member(builder: GrannyVariantBuilder, name: str, count: c_int32, entry_type: GrannyDataTypeDefinition, array_entries: c_void_p):
     GrannyDLL.GrannyAddDynamicArrayMember.argtypes=[POINTER(GrannyVariantBuilder),c_char_p,c_int32,POINTER(GrannyDataTypeDefinition),c_void_p]
-    GrannyDLL.GrannyAddDynamicArrayMember(builder,name,count,entry_type,array_entries)
+    GrannyDLL.GrannyAddDynamicArrayMember(builder,name.encode(),count,entry_type,array_entries)

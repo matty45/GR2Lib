@@ -1,9 +1,9 @@
 """Basic Granny file creation test"""
 
-from ctypes import POINTER, Structure, c_char_p, c_void_p, cast, pointer
-from granny_dll_funcs import granny_begin_file_data_tree_writing, granny_write_data_tree_to_file
-from granny_dll_vars import GrannyFileInfoType, GrannyGRNFileMV_ThisPlatform
-from granny_formats import GrannyDataTypeDefinition, GrannyFileArtToolInfo, GrannyFileExporterInfo, GrannyFileInfo, GrannyMaterial
+from ctypes import POINTER, addressof, byref, c_int, c_void_p, cast, pointer
+from granny_dll_funcs import granny_add_dynamic_array_member, granny_add_string_member, granny_begin_file_data_tree_writing, granny_begin_variant, granny_end_variant, granny_write_data_tree_to_file
+from granny_dll_vars import GrannyFileInfoType, GrannyGRNFileMV_ThisPlatform, GrannyStringType
+from granny_formats import GrannyDataTypeDefinition, GrannyFileArtToolInfo, GrannyFileExporterInfo, GrannyFileInfo, GrannyMaterial, GrannyStringTable, GrannyVariant
 
 def create_basic_art_tool_info() -> GrannyFileArtToolInfo:
     tool_info = GrannyFileArtToolInfo()
@@ -34,23 +34,24 @@ def create_test_material(file_info : GrannyFileInfo):
     file_info.material_count = len(materials)
     file_info.materials = granny_materials
 
-class CustomExtendedData(Structure):
-    """ Custom extended data, ditto """
-    _pack_ = 1
-    _fields_ = [
-                ('test_string',c_char_p)]
+
 
 def add_custom_data_to_test_material(file_info: GrannyFileInfo):
+    string_table = GrannyStringTable()
+    builder = granny_begin_variant(string_table)
 
-    CustomExtendedDataType = (GrannyDataTypeDefinition * 2)()
-    CustomExtendedDataType[0] = GrannyDataTypeDefinition(member_type=8,name = b"TestString")
-    CustomExtendedDataType[1] = GrannyDataTypeDefinition(member_type=0)
+    granny_add_string_member(builder,"Test String", "Wowza!")
 
-    file_info.materials.contents.contents.extended_data.type = CustomExtendedDataType
-    
-    crap = CustomExtendedData(test_string = b"lol")
+    #granny_add_dynamic_array_member(builder, "InitialPositions", 2, GrannyStringType, 213);
 
-    file_info.materials.contents.contents.extended_data.object = cast(pointer(crap), c_void_p)
+    blah = pointer(GrannyDataTypeDefinition())
+    shit = c_void_p()
+
+
+    _ = granny_end_variant(builder,byref(blah),byref(shit))
+
+    file_info.materials.contents.contents.extended_data.type = blah
+    file_info.materials.contents.contents.extended_data.object = shit
 
 
 
